@@ -1,0 +1,5 @@
+{
+ "https://rdap.publicinterestregistry.org/rdap/": "*",
+ "https://rdap.verisign.com/com/v1/": "*",
+ "https://rdap.nixiregistry.in/rdap/": "*"
+}
