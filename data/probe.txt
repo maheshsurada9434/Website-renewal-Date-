@@ -1,0 +1,152 @@
+== https://www.pool.com/Downloads/PoolDeletingDomainsList.zip -> 404 text/html; charset=utf-8 8669
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Infinity Domains by Pool.com</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Next generation domains" />
+
+  <link rel="icon" type="image/png" href="/images/pool-icon-blue-512x512.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/images/pool-
+== https://inventory.auctions.godaddy.com/all_expiring_auctions.json.zip -> 200 application/zip 57167215
+Archive:  tmp/d27043e7
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+692931310  2026-10-10 07:19   all_expiring_auctions.json
+---------                     -------
+{
+"meta":
+{
+  "language": "en-US",
+  "copyright": "Copyright 2026",
+  "lastBuildDate": "2026-10-10T14:07:10Z",
+  "title": "Go Daddy Auctions - All Expired and Closeout Listings",
+  "description": "All Expired and Closeouts Auctions at Go Daddy Auctions",
+  "fieldDescription": {
+    "domainName": "name of the listing in auction",
+    "link": "hyperlink to the auction's domain details page",
+    "auctionType": "sale type of the listing",
+    "auctionEndTime": "UTC time at which the auction ends",
+    "price": "Price of the domain in US dollars",
+    "numberOfBids": "Number of bids o
+== https://inventory.auctions.godaddy.com/tdnam_all_listings.csv.zip -> 403 application/xml 111
+<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>AccessDenied</Code><Message>Access Denied</Message></Error>
+== https://inventory.auctions.godaddy.com/all_listings_ending_today.json.zip -> 200 application/zip 21966060
+Archive:  tmp/c3a0f0f2
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+259123758  2026-10-10 07:20   all_listings_ending_today.json
+---------                     -------
+{
+"meta":
+{
+  "language": "en-US",
+  "copyright": "Copyright 2026",
+  "lastBuildDate": "2026-10-10T14:03:48Z",
+  "title": "All Listings Ending Today",
+  "description": "All listings ending today at Go Daddy Auctions",
+  "fieldDescription": {
+    "domainName": "name of the listing in auction",
+    "link": "hyperlink to the auction's domain details page",
+    "auctionType": "sale type of the listing",
+    "auctionEndTime": "UTC time at which the auction ends",
+    "price": "Price of the domain in US dollars",
+    "numberOfBids": "Number of bids on the domain",
+    "domainAge": "Age
+== https://inventory.auctions.godaddy.com/expiring_service_auctions.json.zip -> 403 application/xml 111
+<?xml version="1.0" encoding="UTF-8"?>
+<Error><Code>AccessDenied</Code><Message>Access Denied</Message></Error>
+== https://www.snapnames.com/file_dl.sn?file=deletinglist.zip -> 200 application/octet-stream;charset=UTF-8 7206595
+Archive:  tmp/d1a8c9e6
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+198083808  2026-10-11 02:27   deletinglist.txt
+---------                     -------
+Domain Name                                                      	Current Bid 	Join By Date (ET)	Join By Date (PT)	Bidders 	Seller         	TLD     	Length	Words                                                                           	Word Count	Categories                                                                                                      	Hyphens 	Numbers 	Auction Type
+videoserver.co.uk                                                	         79 	 10/11/2026 01:00	 10/10/2026 22:00	        	Drop           	.co.uk  	    11	                                                   
+== https://www.namejet.com/download/StandardAuctions.csv -> 404 text/html;charset=utf-8 8268
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<html>
+<head>
+	<title>NameJet: HTTP 404</title>
+	<meta name="viewport" content="width=device-width">
+	<link rel="icon" href="/images/nj_icons/favicon.ico?t=1785514252000" type="image/x-icon" />
+    <link rel="shortcut icon" href="/images/nj_icons/favicon.ico?t=1785514252000" type="image/x-icon" />
+   
+	<link rel="stylesheet" hre
+== https://www.dynadot.com/market/backorder/backorders.csv -> 200 text/csv 127571444
+Domain,End Time,End Timestamp,Dynappraisal,Starting Price,Starting Price Currency
+thestoryist.co.uk,2026/12/12 15:45 PST,1797119100000, ,$12.99,USD
+beatreaperz.co.uk,2026/12/12 15:45 PST,1797119100000, ,$12.99,USD
+mjroofingandupvcservices.co.uk,2026/12/12 15:45 PST,1797119100000, ,$12.99,USD
+professorphilipdrew.co.uk,2026/12/12 15:45 PST,1797119100000, ,$12.99,USD
+kkx.co.uk,2026/12/12 15:45 P
+== https://tranco-list.eu/top-1m.csv.zip -> 200 application/zip 9642144
+Archive:  tmp/98cae19a
+  Length      Date    Time    Name
+---------  ---------- -----   ----
+ 22614084  2026-10-10 22:22   top-1m.csv
+---------                     -------
+1,google.com
+2,cloudflare.com
+3,gstatic.com
+4,facebook.com
+5,amazonaws.com
+6,googleapis.com
+7,akamai.net
+8,microsoft.com
+9,apple.com
+10,youtube.com
+11,instagram.com
+12,fbcdn.net
+13,mail.ru
+14,ezviz7.com
+15,domaincontrol.com
+16,twitter.com
+17,dzen.ru
+18,linkedin.com
+19,akamaiedge.net
+20,googlevideo.com
+21,googletagmanager.com
+22,office.com
+23,akadns.net
+24,hicloudcam.com
+25,live.com
+26,azure.com
+27,amazon.com
+28,gtld-servers.net
+29,github.com
+30,appsflyersdk.com
+31,wikipedia.org
+32,whatsapp.net
+33,aaplimg.com
+34,bing.com
+35,cloudfront.net
+36,fastly.net
+37,app
