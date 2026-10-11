@@ -1,1 +1,127 @@
-{"generated":"2026-10-11T02:17:00.000Z","count":0,"results":[]}
+{
+ "generated": "2026-10-11T03:54:13.742Z",
+ "count": 4,
+ "results": [
+  {
+   "domain": "wikipedia.org",
+   "found": true,
+   "expires": "2027-01-13T00:12:14Z",
+   "created": "2001-01-13T00:12:14.754Z",
+   "updated": "2026-08-12T08:47:19.41Z",
+   "daysLeft": 93,
+   "status": [
+    "client delete prohibited",
+    "client transfer prohibited",
+    "client update prohibited"
+   ],
+   "nameservers": [
+    "ns0.wikimedia.org",
+    "ns1.wikimedia.org",
+    "ns2.wikimedia.org"
+   ],
+   "host": "",
+   "registrar": {
+    "name": "MarkMonitor Inc.",
+    "ianaId": "292",
+    "abuseEmail": "abusecomplaints@markmonitor.com",
+    "url": "https://rdap.markmonitor.com/rdap/"
+   },
+   "ageYears": 25,
+   "phase": "active",
+   "dropEstimate": "",
+   "checkedVia": "https://rdap.publicinterestregistry.org/rdap/",
+   "quality": 8
+  },
+  {
+   "domain": "example.com",
+   "found": true,
+   "expires": "2027-08-13T04:00:00Z",
+   "created": "1995-08-14T04:00:00Z",
+   "updated": "2026-08-14T08:01:43Z",
+   "daysLeft": 306,
+   "status": [
+    "client delete prohibited",
+    "client transfer prohibited",
+    "client update prohibited"
+   ],
+   "nameservers": [
+    "elliott.ns.cloudflare.com",
+    "hera.ns.cloudflare.com"
+   ],
+   "host": "Cloudflare",
+   "registrar": {
+    "name": "RESERVED-Internet Assigned Numbers Authority",
+    "ianaId": "376",
+    "abuseEmail": "",
+    "url": ""
+   },
+   "ageYears": 31,
+   "phase": "active",
+   "dropEstimate": "",
+   "checkedVia": "https://rdap.verisign.com/com/v1/",
+   "quality": 10
+  },
+  {
+   "domain": "github.com",
+   "found": true,
+   "expires": "2028-10-09T18:20:50Z",
+   "created": "2007-10-09T18:20:50Z",
+   "updated": "2026-09-07T09:22:52Z",
+   "daysLeft": 729,
+   "status": [
+    "client delete prohibited",
+    "client transfer prohibited",
+    "client update prohibited"
+   ],
+   "nameservers": [
+    "dns1.p08.nsone.net",
+    "dns2.p08.nsone.net",
+    "dns3.p08.nsone.net",
+    "dns4.p08.nsone.net",
+    "ns-1283.awsdns-32.org",
+    "ns-1707.awsdns-21.co.uk",
+    "ns-421.awsdns-52.com",
+    "ns-520.awsdns-01.net"
+   ],
+   "host": "NS1",
+   "registrar": {
+    "name": "MarkMonitor Inc.",
+    "ianaId": "292",
+    "abuseEmail": "abusecomplaints@markmonitor.com",
+    "url": "http://www.markmonitor.com"
+   },
+   "ageYears": 19,
+   "phase": "active",
+   "dropEstimate": "",
+   "checkedVia": "https://rdap.verisign.com/com/v1/",
+   "quality": 10
+  },
+  {
+   "domain": "andamanjobs.in",
+   "found": true,
+   "expires": "2029-09-21T03:15:29.723Z",
+   "created": "2026-09-21T03:15:29.723Z",
+   "updated": "2026-09-26T03:16:20.272Z",
+   "daysLeft": 1075,
+   "status": [
+    "client transfer prohibited"
+   ],
+   "nameservers": [
+    "athena.dns-parking.com",
+    "apollo.dns-parking.com"
+   ],
+   "host": "Hostinger",
+   "registrar": {
+    "name": "HOSTINGER operations, UAB",
+    "ianaId": "1636",
+    "abuseEmail": "domains@hostinger.com",
+    "url": "https://rdap.nixiregistry.in/rdap/entity/1636"
+   },
+   "ageYears": 0,
+   "phase": "active",
+   "dropEstimate": "",
+   "checkedVia": "https://rdap.nixiregistry.in/rdap/",
+   "quality": 6
+  }
+ ]
+}
