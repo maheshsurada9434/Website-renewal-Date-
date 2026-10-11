@@ -26,7 +26,7 @@ jobs:
         run: |
           git config user.name "Mahesh Surada"
           git config user.email "36591838+maheshsurada9434@users.noreply.github.com"
-          git add data/domains.json
+          git add data/
           git diff --cached --quiet || (git commit -m "Daily scan $(date -u +%F)" && git push)
       - name: Collect site files
         run: |

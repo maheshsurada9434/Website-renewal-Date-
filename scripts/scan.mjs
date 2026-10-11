@@ -34,10 +34,12 @@ if (process.env.GITHUB_STEP_SUMMARY) {
 }
 
 // Check that browsers may read each registry (CORS), so the in-app lookup works.
+const access = {};
 const hosts = [...new Set(results.map(r => r.checkedVia).filter(Boolean))];
 for (const h of hosts) {
   try {
     const res = await fetch(h + 'domain/' + (results.find(r => r.checkedVia === h) || {}).domain, { headers: { Origin: 'https://maheshsurada9434.github.io' } });
-    console.log(`Browser access ${h}: ${res.headers.get('access-control-allow-origin') || 'NOT ALLOWED'}`);
-  } catch (e) { console.log(`Browser access ${h}: check failed`); }
+    access[h] = res.headers.get('access-control-allow-origin') || 'NOT ALLOWED'; console.log(`Browser access ${h}: ${access[h]}`);
+  } catch (e) { access[h] = 'check failed'; }
 }
+writeFileSync(new URL('../data/access.json', import.meta.url), JSON.stringify(access, null, 1) + '\n');
