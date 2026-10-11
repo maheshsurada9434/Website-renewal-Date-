@@ -78,7 +78,7 @@
 
   const HOSTS = [[/cloudflare/, 'Cloudflare'], [/hostinger|dns-parking/, 'Hostinger'], [/domaincontrol|secureserver/, 'GoDaddy'], [/registrar-servers|namecheaphosting/, 'Namecheap'],
     [/googledomains|google\.com|ns-cloud/, 'Google'], [/awsdns/, 'Amazon AWS'], [/azure-dns/, 'Microsoft Azure'], [/wixdns/, 'Wix'], [/squarespace/, 'Squarespace'], [/shopify/, 'Shopify'],
-    [/bigrock/, 'BigRock'], [/hostgator/, 'HostGator'], [/bluehost/, 'Bluehost'], [/digitalocean/, 'DigitalOcean'], [/vercel/, 'Vercel'], [/netlify|nsone/, 'Netlify/NS1'], [/zoho/, 'Zoho'],
+    [/bigrock/, 'BigRock'], [/hostgator/, 'HostGator'], [/bluehost/, 'Bluehost'], [/digitalocean/, 'DigitalOcean'], [/vercel/, 'Vercel'], [/netlify/, 'Netlify'], [/nsone/, 'NS1'], [/zoho/, 'Zoho'],
     [/wordpress\.com/, 'WordPress.com'], [/parking|sedoparking|bodis|above\.com|parkingcrew|afternic|dan\.com|uniregistry/, 'Parked / for sale']];
   function hostHint(ns) { for (const n of ns) for (const [re, name] of HOSTS) if (re.test(n)) return name; return ''; }
 

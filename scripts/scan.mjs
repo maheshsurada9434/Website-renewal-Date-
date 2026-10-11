@@ -32,3 +32,12 @@ if (process.env.GITHUB_STEP_SUMMARY) {
   const rows = results.map(r => `| ${r.domain} | ${r.error ? '⚠️ ' + r.error : r.phase} | ${r.expires ? r.expires.slice(0, 10) : '—'} | ${r.daysLeft ?? '—'} |`).join('\n');
   writeFileSync(process.env.GITHUB_STEP_SUMMARY, `## Renewal Radar scan\n\n| Domain | Phase | Expires | Days left |\n|---|---|---|---|\n${rows}\n`, { flag: 'a' });
 }
+
+// Check that browsers may read each registry (CORS), so the in-app lookup works.
+const hosts = [...new Set(results.map(r => r.checkedVia).filter(Boolean))];
+for (const h of hosts) {
+  try {
+    const res = await fetch(h + 'domain/' + (results.find(r => r.checkedVia === h) || {}).domain, { headers: { Origin: 'https://maheshsurada9434.github.io' } });
+    console.log(`Browser access ${h}: ${res.headers.get('access-control-allow-origin') || 'NOT ALLOWED'}`);
+  } catch (e) { console.log(`Browser access ${h}: check failed`); }
+}
