@@ -2,6 +2,7 @@ name: Scan and publish
 on:
   schedule:
     - cron: '17 2 * * *'   # every day at 07:47 IST
+    - cron: '17 14 * * *'  # and 19:47 IST
   push:
     branches: [main]
   workflow_dispatch:
@@ -20,6 +21,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Find expired and dropping domains
+        run: node scripts/feed.mjs
+        continue-on-error: true
       - name: Check renewal dates
         run: node scripts/scan.mjs
       - name: Save results
@@ -27,7 +31,7 @@ jobs:
           git config user.name "Mahesh Surada"
           git config user.email "36591838+maheshsurada9434@users.noreply.github.com"
           git add data/
-          git diff --cached --quiet || (git commit -m "Daily scan $(date -u +%F)" && git push)
+          git diff --cached --quiet || (git commit -m "Daily scan $(date -u +%F)" && git pull --rebase && git push)
       - name: Collect site files
         run: |
           mkdir _site
