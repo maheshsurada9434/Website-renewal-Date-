@@ -1,0 +1,8 @@
+# Renewal Radar watchlist: one website or domain per line.
+# The daily scan checks every domain here and publishes the results on the site.
+# Lines starting with # are ignored. You can paste full links; they are cleaned automatically.
+
+andamanjobs.in
+example.com
+wikipedia.org
+github.com

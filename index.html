@@ -1,0 +1,515 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Renewal Radar · Website renewal date finder</title>
+<meta name="description" content="Find any website's domain renewal date and time, registrar, age and status. Track expiring domains and get the daily scan.">
+<meta name="theme-color" content="#0d1226">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Renewal Radar">
+<style>
+:root{
+  --bg:#f3f5fb;--card:#fff;--ink:#11152a;--muted:#5d6580;--line:#e1e5f0;--soft:#f6f7fc;
+  --brand:#5b4cf0;--brand-soft:#ecebff;--hero1:#0d1226;--hero2:#1d1b4b;
+  --ok:#11845b;--ok-soft:#e3f6ee;--info:#2563c9;--info-soft:#e5eefc;--warn:#b86e00;--warn-soft:#fff2db;
+  --hot:#d1490f;--hot-soft:#ffe9dc;--bad:#c62f3d;--bad-soft:#fde6e8;--del:#a3279a;--del-soft:#fbe5f8;--free:#0a8f3c;--free-soft:#ddf7e6;
+  --shadow:0 1px 2px rgba(17,21,42,.05),0 8px 24px -12px rgba(17,21,42,.22);--r:16px;
+  --sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px);color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#090c18;--card:#121729;--ink:#e9ecf8;--muted:#9aa2bf;--line:#232a44;--soft:#0e1324;
+  --brand:#8b7fff;--brand-soft:#221f4d;--ok:#3ccf91;--ok-soft:#10301f;--info:#79a8ff;--info-soft:#15254a;--warn:#f0b54d;--warn-soft:#37290c;
+  --hot:#ff9259;--hot-soft:#3c1e0e;--bad:#ff6b78;--bad-soft:#3b1419;--del:#ee79e3;--del-soft:#391436;--free:#4fe08a;--free-soft:#0e3420;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 12px 28px -14px rgba(0,0,0,.7);color-scheme:dark;
+}}
+*{box-sizing:border-box}[hidden]{display:none!important}
+html,body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans",sans-serif;-webkit-text-size-adjust:100%}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer;-webkit-tap-highlight-color:transparent}
+a{color:var(--brand)}
+.wrap{max-width:820px;margin:0 auto;padding:0 16px}
+
+/* hero */
+.hero{background:radial-gradient(120% 90% at 85% 0%,#3b2fb8 0%,transparent 55%),linear-gradient(160deg,var(--hero1),var(--hero2));color:#fff;padding:calc(18px + var(--sat)) 0 26px;position:relative;overflow:hidden}
+.hero .radar{position:absolute;right:-90px;top:-90px;width:300px;height:300px;border-radius:50%;border:1px solid rgba(255,255,255,.08);box-shadow:0 0 0 40px rgba(255,255,255,.025),0 0 0 80px rgba(255,255,255,.02);pointer-events:none}
+.hero .radar::after{content:"";position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,rgba(139,127,255,.35),transparent 25%);animation:sweep 6s linear infinite}
+@keyframes sweep{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.hero .radar::after{animation:none}}
+.brandrow{display:flex;align-items:center;gap:10px;position:relative}
+.brandrow img{width:34px;height:34px;border-radius:9px}
+.brandrow b{font-size:17px;letter-spacing:.01em}
+.hero h1{font-size:clamp(24px,6vw,34px);line-height:1.15;margin:18px 0 6px;position:relative;max-width:560px}
+.hero p{margin:0 0 16px;opacity:.82;position:relative;max-width:560px}
+.search{position:relative;display:flex;gap:8px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);padding:6px;border-radius:16px;backdrop-filter:blur(6px)}
+.search input{flex:1;min-width:0;background:transparent;border:0;outline:0;color:#fff;padding:10px 10px;font-size:16px}
+.search input::placeholder{color:rgba(255,255,255,.55)}
+.search button{border:0;background:#fff;color:#1d1b4b;font-weight:700;border-radius:11px;padding:0 18px;min-height:46px}
+.hint{font-size:12.5px;opacity:.7;margin-top:8px;position:relative}
+.hint button{background:none;border:0;color:#cfc9ff;text-decoration:underline;padding:0;font-size:inherit}
+
+/* tabs */
+.tabs{display:flex;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px;margin:16px 0;box-shadow:var(--shadow);position:sticky;top:calc(6px + var(--sat));z-index:10}
+.tabs button{flex:1;border:0;background:none;border-radius:10px;padding:9px 4px;font-weight:600;color:var(--muted);font-size:14px;white-space:nowrap}
+.tabs button.on{background:var(--brand);color:#fff}
+.tabs .n{display:inline-block;min-width:18px;font-size:11px;padding:0 5px;border-radius:9px;background:var(--brand-soft);color:var(--brand);margin-left:3px}
+.tabs button.on .n{background:rgba(255,255,255,.25);color:#fff}
+
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);padding:16px;margin-bottom:14px;border:1px solid var(--line)}
+.card h2{font-size:17px;margin:0 0 8px}
+.card h3{font-size:12.5px;margin:16px 0 8px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.muted{color:var(--muted)}.small{font-size:13px}
+.row{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.between{justify-content:space-between}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid transparent;border-radius:11px;padding:8px 13px;min-height:40px;font-weight:600;font-size:14px;background:var(--brand);color:#fff;text-decoration:none}
+.btn.ghost{background:var(--soft);color:var(--ink);border-color:var(--line)}
+.btn.sm{min-height:34px;padding:5px 10px;font-size:13px}
+.btn.on{background:var(--warn-soft);color:var(--warn);border-color:transparent}
+
+/* result card */
+.res{position:relative;overflow:hidden}
+.res .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.res .dom{font-size:20px;font-weight:800;word-break:break-all;line-height:1.2}
+.res .dom a{color:inherit;text-decoration:none}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;white-space:nowrap}
+.badge::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+.p-active{background:var(--ok-soft);color:var(--ok)}.p-watch{background:var(--info-soft);color:var(--info)}.p-soon{background:var(--warn-soft);color:var(--warn)}
+.p-grace{background:var(--hot-soft);color:var(--hot)}.p-redemption{background:var(--bad-soft);color:var(--bad)}.p-pendingDelete{background:var(--del-soft);color:var(--del)}
+.p-available{background:var(--free-soft);color:var(--free)}.p-unknown,.p-error{background:var(--soft);color:var(--muted)}
+.exp{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;margin:14px 0 4px;padding:14px;border-radius:14px;background:var(--soft);border:1px solid var(--line)}
+.exp .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.exp .when{font-size:18px;font-weight:800;margin-top:2px}
+.exp .utc{font-size:12.5px;color:var(--muted)}
+.count{text-align:center;min-width:86px;padding:8px 10px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
+.count b{display:block;font-size:26px;line-height:1;font-variant-numeric:tabular-nums}
+.count span{font-size:11.5px;color:var(--muted)}
+.facts{display:grid;grid-template-columns:repeat(2,1fr);gap:0 18px;margin-top:8px}
+.facts div{padding:9px 0;border-bottom:1px solid var(--line);min-width:0}
+.facts dt{font-size:12px;color:var(--muted)}
+.facts dd{margin:1px 0 0;font-weight:600;word-break:break-word}
+@media (max-width:520px){.facts{grid-template-columns:1fr}}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--soft);border:1px solid var(--line)}
+.chip.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}.chip.no{color:var(--muted)}
+.meter{height:8px;border-radius:6px;background:var(--soft);border:1px solid var(--line);overflow:hidden;margin:6px 0 8px}
+.meter i{display:block;height:100%;background:linear-gradient(90deg,var(--brand),#22c1a1)}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+
+/* lifecycle */
+.life{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;margin:10px 0 2px}
+.life div{font-size:11px;text-align:center;padding:7px 2px;border-radius:8px;background:var(--soft);color:var(--muted);border:1px solid var(--line);line-height:1.2}
+.life div b{display:block;font-size:12px;color:var(--ink)}
+.guide .life div{text-align:left;padding:8px 10px}
+@media (max-width:560px){.guide .life{grid-template-columns:1fr}.guide .life div b{display:inline;margin-right:6px}}
+.life div.on{outline:2px solid var(--brand);outline-offset:1px;background:var(--brand-soft)}
+.note{font-size:13px;padding:10px 12px;border-radius:12px;background:var(--brand-soft);margin-top:10px}
+.note.warn{background:var(--warn-soft)}
+
+/* watch list rows */
+.filters{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:10px;scrollbar-width:none}
+.filters button{flex:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:600}
+.filters button.on{background:var(--ink);color:var(--card);border-color:var(--ink)}
+.item{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-bottom:0;text-align:left}
+.item:first-child{border-top:0}
+.item .grow{flex:1;min-width:0}
+.item .d{font-weight:700;word-break:break-all}
+.item .m{font-size:12.5px;color:var(--muted)}
+.item .days{text-align:right;font-variant-numeric:tabular-nums;font-weight:800;white-space:nowrap}
+.item .days small{display:block;font-weight:500;font-size:11px;color:var(--muted)}
+.empty{text-align:center;color:var(--muted);padding:18px 6px}
+textarea.in,input.in,select.in{width:100%;border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:10px 12px;outline:0}
+textarea.in{min-height:110px;resize:vertical}
+.in:focus{border-color:var(--brand)}
+.spin{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:sweep .7s linear infinite;vertical-align:-3px}
+.toast{position:fixed;left:50%;bottom:calc(20px + var(--sab));transform:translate(-50%,20px);background:#11152a;color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;visibility:hidden;transition:.2s;z-index:90;max-width:90vw;text-align:center}
+.toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+footer{text-align:center;color:var(--muted);font-size:12.5px;padding:8px 0 calc(28px + var(--sab))}
+.guide p,.guide li{font-size:14.5px}
+.guide ol,.guide ul{padding-left:20px;margin:6px 0}
+.guide li{margin:4px 0}
+.msg{white-space:pre-wrap;font-size:14px;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:12px;margin:8px 0}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px}
+table.t td,table.t th{padding:7px 6px;border-bottom:1px solid var(--line);text-align:left}
+table.t th{font-size:12px;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="radar" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="brandrow"><img src="icons/icon-192.png" alt=""><b>Renewal Radar</b></div>
+    <h1>When does a website's domain renew?</h1>
+    <p>Type any website to see its renewal date and time, registrar, age and status, straight from the official registry.</p>
+    <form class="search" id="searchForm" role="search">
+      <input id="q" type="text" inputmode="url" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="e.g. andamanjobs.in or a full link" aria-label="Website or domain">
+      <button type="submit" id="goBtn">Check</button>
+    </form>
+    <div class="hint">Many at once? Separate them with commas or spaces. <button type="button" data-act="bulk">Paste a list</button></div>
+  </div>
+</header>
+
+<main class="wrap">
+  <nav class="tabs" role="tablist">
+    <button data-tab="check" class="on">Check</button>
+    <button data-tab="watch">Watchlist <span class="n" id="nWatch">0</span></button>
+    <button data-tab="scan">Daily scan</button>
+    <button data-tab="guide">Guide</button>
+  </nav>
+
+  <section id="v-check">
+    <div id="results"></div>
+    <div class="card" id="intro">
+      <h2>What you'll see</h2>
+      <ul class="small muted" style="margin:6px 0 0;padding-left:18px">
+        <li><b>Renewal (expiry) date and time</b> in your time zone, with a countdown</li>
+        <li><b>Stage</b>: active, expiring soon, expired (grace), redemption, pending delete, or free to register</li>
+        <li><b>Registrar, hosting, age</b> and a quick quality check for buyers</li>
+        <li>Save to your <b>watchlist</b>, add a calendar reminder, or export to Excel</li>
+      </ul>
+      <div class="row" style="margin-top:12px"><span class="small muted">Try:</span>
+        <button class="btn sm ghost" data-try="andamanjobs.in">andamanjobs.in</button>
+        <button class="btn sm ghost" data-try="wikipedia.org">wikipedia.org</button>
+        <button class="btn sm ghost" data-try="example.com">example.com</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="v-watch" hidden>
+    <div class="card">
+      <div class="row between"><h2 style="margin:0">Your watchlist</h2>
+        <div class="row"><button class="btn sm ghost" data-act="refresh-all">↻ Refresh all</button><button class="btn sm ghost" data-act="csv">⬇ CSV</button></div></div>
+      <p class="small muted" style="margin:4px 0 12px">Saved on this device. Sorted by what needs attention first.</p>
+      <div class="filters" id="filters"></div>
+      <div id="watchList"></div>
+    </div>
+  </section>
+
+  <section id="v-scan" hidden>
+    <div class="card">
+      <h2>Daily scan</h2>
+      <p class="small muted" style="margin:0 0 10px" id="scanMeta">Loading…</p>
+      <div class="filters" id="scanFilters"></div>
+      <div id="scanList"></div>
+      <div class="note" style="margin-top:14px">To scan more domains every morning, add them to <a id="editLink" target="_blank" rel="noopener" href="#"><b>domains.txt</b></a> on GitHub (one per line). The scan runs every day at about 7:45 AM IST and updates this list.</div>
+    </div>
+  </section>
+
+  <section id="v-guide" hidden class="guide">
+    <div class="card">
+      <h2>How a domain expires</h2>
+      <p>A domain doesn't become free the moment it expires. Most go through these stages (exact days depend on the ending and registrar):</p>
+      <div class="life"><div><b>Active</b>Paid up</div><div><b>Grace</b>0–45 days after expiry. Owner renews at normal price</div><div><b>Redemption</b>~30 days. Owner can still recover it (costly)</div><div><b>Pending delete</b>5 days. No one can touch it</div><div><b>Available</b>Anyone can register</div></div>
+      <p class="small muted">So a domain usually becomes free about <b>75–80 days after its expiry date</b>, and only if the owner never renews. Most owners do renew; many domains also have auto-renew turned on.</p>
+    </div>
+    <div class="card">
+      <h2>Finding domains worth buying</h2>
+      <ol>
+        <li>Add domains you like to the <b>watchlist</b> or the <b>daily scan</b>.</li>
+        <li>Watch for <span class="badge p-grace">Expired</span> and <span class="badge p-redemption">Redemption</span>. These may drop soon.</li>
+        <li>When one shows <span class="badge p-available">Available</span>, register it at any registrar (links appear on the card).</li>
+        <li>For in-demand names, backorder services (registrar "backorder" or "drop catch") try to grab it the second it drops.</li>
+        <li>Prefer short, easy-to-say, older <b>.com</b> / <b>.in</b> names without hyphens or numbers. The card gives a quick score.</li>
+      </ol>
+    </div>
+    <div class="card">
+      <h2>Play it fair (and stay out of trouble)</h2>
+      <ul>
+        <li><b>Don't buy a business's name or brand to sell it back to them.</b> Under the domain dispute rules (UDRP, and INDRP for .in), that's "bad-faith registration". The owner can take the domain back through a complaint, and you lose what you paid.</li>
+        <li><b>Safe ways to earn:</b> buy generic dropped names (words, places, topics) and list them on marketplaces like Sedo, Afternic or Dan.com; or build small sites on them.</li>
+        <li><b>Even better recurring income:</b> offer website owners a renewal reminder or management service, so you're paid every year for keeping their domain safe. The <i>heads-up message</i> button on each card drafts that message for you.</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h2>Where the data comes from</h2>
+      <p class="small">Lookups use <b>RDAP</b>, the official registry service that replaced WHOIS. It's run by the registries themselves, is free, and needs no account. Some country endings don't publish RDAP yet; those show a note instead of a date.</p>
+    </div>
+  </section>
+</main>
+<footer>Renewal Radar · by <b>Mahesh Surada</b> · <a href="https://github.com/maheshsurada9434/Website-renewal-Date-" target="_blank" rel="noopener">GitHub</a></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="rdap.js"></script>
+<script>
+'use strict';
+const REPO = 'maheshsurada9434/Website-renewal-Date-';
+const KEY = 'radar.v1';
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const PHASE = {
+  active:{label:'Active', tip:'Paid up. Not expiring soon.'},
+  watch:{label:'Renews in ≤90 days', tip:'Coming up for renewal within 3 months.'},
+  soon:{label:'Expiring soon', tip:'Renewal due within 30 days.'},
+  grace:{label:'Expired (grace)', tip:'Past its expiry date. The owner can still renew at the normal price.'},
+  redemption:{label:'Redemption', tip:'Deleted by the registrar. The owner can still recover it for a fee.'},
+  pendingDelete:{label:'Pending delete', tip:'Will be released to the public in about 5 days.'},
+  available:{label:'Not registered', tip:'The registry has no record. It is probably free to register.'},
+  unknown:{label:'No expiry published', tip:'This registry does not publish the expiry date.'},
+  error:{label:'Lookup failed', tip:''}
+};
+const ORDER = {pendingDelete:0, redemption:1, grace:2, available:3, soon:4, watch:5, active:6, unknown:7, error:8};
+const STATUS_TEXT = {
+  'client transfer prohibited':'Transfer lock on', 'server transfer prohibited':'Registry transfer lock', 'client delete prohibited':'Delete lock', 'server delete prohibited':'Registry delete lock',
+  'client update prohibited':'Update lock', 'server update prohibited':'Registry update lock', 'client renew prohibited':'Renew blocked by registrar', 'client hold':'On hold (site offline)', 'server hold':'Registry hold (site offline)',
+  'auto renew period':'Just auto-renewed', 'renew period':'Recently renewed', 'redemption period':'Redemption period', 'pending delete':'Pending delete', 'active':'Active', 'ok':'OK', 'inactive':'No nameservers',
+  'transfer period':'Recently transferred', 'add period':'Newly registered', 'pending transfer':'Transfer in progress', 'pending renew':'Renewal in progress'
+};
+
+/* ---------- store ---------- */
+let store = {watch:{}};
+try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && s.watch) store = s; } catch (e) {}
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} };
+const cache = {};
+let lastShown = [];
+
+function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('show'); clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2400); }
+
+/* ---------- formatting ---------- */
+const TZ = Intl.DateTimeFormat().resolvedOptions().timeZone || 'local';
+const fDateTime = iso => new Date(iso).toLocaleString('en-IN', {day:'numeric', month:'short', year:'numeric', hour:'numeric', minute:'2-digit', hour12:true});
+const fDate = iso => new Date(iso).toLocaleDateString('en-IN', {day:'numeric', month:'short', year:'numeric'});
+const fUTC = iso => new Date(iso).toISOString().replace('T', ' ').slice(0, 16) + ' UTC';
+const tzShort = () => { try { return new Date().toLocaleTimeString('en-IN', {timeZoneName:'short'}).split(' ').pop(); } catch (e) { return ''; } };
+function ago(iso) {
+  const days = Math.floor((Date.now() - Date.parse(iso)) / 864e5);
+  if (days < 1) return 'today'; if (days < 60) return days + ' days ago';
+  const m = Math.floor(days / 30.44); if (m < 24) return m + ' months ago';
+  return Math.floor(days / 365.25) + ' years ago';
+}
+function daysText(r) {
+  if (r.daysLeft == null) return {big:'—', small:''};
+  if (r.daysLeft < 0) return {big:Math.abs(r.daysLeft), small:'days ago'};
+  if (r.daysLeft === 0) return {big:'0', small:'today'};
+  return {big:r.daysLeft, small:r.daysLeft === 1 ? 'day left' : 'days left'};
+}
+const phaseKey = r => r.error ? 'error' : r.phase || 'unknown';
+const badge = r => { const k = phaseKey(r); return `<span class="badge p-${k}" title="${esc(PHASE[k].tip)}">${PHASE[k].label}</span>`; };
+
+/* ---------- result card ---------- */
+function lifeBar(r) {
+  const idx = {active:0, watch:0, soon:0, grace:1, redemption:2, pendingDelete:3, available:4}[r.phase];
+  if (idx == null) return '';
+  return `<div class="life" aria-label="Domain stage">${['Active','Grace','Redemption','Pending delete','Available'].map((x, i) => `<div class="${i === idx ? 'on' : ''}"><b>${x}</b></div>`).join('')}</div>`;
+}
+function buyLinks(d) {
+  const q = encodeURIComponent(d);
+  return [['Hostinger', `https://www.hostinger.in/domain-name-search?domain=${q}`], ['GoDaddy', `https://www.godaddy.com/domainsearch/find?domainToCheck=${q}`], ['Namecheap', `https://www.namecheap.com/domains/registration/results/?domain=${q}`], ['Porkbun', `https://porkbun.com/checkout/search?q=${q}`]];
+}
+function cardHTML(r) {
+  const d = r.domain, watched = !!store.watch[d];
+  if (r.error) return `<article class="card res" data-d="${esc(d)}"><div class="top"><div class="dom">${esc(d || 'Unknown')}</div>${badge(r)}</div><p class="muted" style="margin:10px 0 0">${esc(r.error)}</p>
+    <div class="actions"><button class="btn sm ghost" data-recheck="${esc(d)}">↻ Try again</button>${d ? `<a class="btn sm ghost" target="_blank" rel="noopener" href="https://lookup.icann.org/en/lookup?name=${encodeURIComponent(d)}">Open ICANN lookup</a>` : ''}</div></article>`;
+  if (r.found === false) return `<article class="card res" data-d="${esc(d)}"><div class="top"><div class="dom">${esc(d)}</div>${badge(r)}</div>
+    <p style="margin:10px 0 4px">The registry has no record of <b>${esc(d)}</b>. It's very likely <b>free to register</b> right now.</p>${lifeBar(r)}
+    <h3>Register it</h3><div class="actions" style="margin-top:0">${buyLinks(d).map(([n, u]) => `<a class="btn sm" target="_blank" rel="noopener" href="${u}">${n}</a>`).join('')}</div>
+    <div class="actions"><button class="btn sm ghost ${watched ? 'on' : ''}" data-star="${esc(d)}">${watched ? '★ Watching' : '☆ Watch'}</button><button class="btn sm ghost" data-recheck="${esc(d)}">↻ Check again</button></div></article>`;
+  const dt = daysText(r), q = RDAP.quality(d, r);
+  const rg = r.registrar || {};
+  const statuses = (r.status || []).map(s => `<span class="chip" title="${esc(s)}">${esc(STATUS_TEXT[s] || s)}</span>`).join('');
+  return `<article class="card res" data-d="${esc(d)}">
+    <div class="top"><div class="dom"><a href="https://${esc(d)}" target="_blank" rel="noopener">${esc(d)} ↗</a></div>${badge(r)}</div>
+    ${r.expires ? `<div class="exp"><div><div class="lbl">${r.daysLeft < 0 ? 'Expired on' : 'Renewal date'}</div><div class="when">${esc(fDateTime(r.expires))} <span class="small muted">${esc(tzShort())}</span></div><div class="utc">${esc(fUTC(r.expires))}</div></div><div class="count"><b>${dt.big}</b><span>${dt.small}</span></div></div>`
+      : `<div class="note warn">This registry doesn't publish the expiry date. Try the registrar's own WHOIS page.</div>`}
+    ${lifeBar(r)}
+    ${r.dropEstimate ? `<div class="note warn">If the owner doesn't renew, it may become free around <b>${esc(fDate(r.dropEstimate))}</b>. This is an estimate; registries differ.</div>` : ''}
+    <dl class="facts">
+      <div><dt>Registrar</dt><dd>${esc(rg.name || '—')}${rg.ianaId ? ` <span class="muted small">(IANA ${esc(rg.ianaId)})</span>` : ''}</dd></div>
+      <div><dt>Registered</dt><dd>${r.created ? `${esc(fDate(r.created))} <span class="muted small">(${r.ageYears} yr${r.ageYears === 1 ? '' : 's'} old)</span>` : '—'}</dd></div>
+      <div><dt>Last changed</dt><dd>${r.updated ? `${esc(fDate(r.updated))} <span class="muted small">(${esc(ago(r.updated))})</span>` : '—'}</dd></div>
+      <div><dt>DNS / hosting</dt><dd>${esc(r.host || (r.nameservers[0] || '—'))}</dd></div>
+    </dl>
+    ${statuses ? `<h3>Status</h3><div class="chips">${statuses}</div>` : ''}
+    <h3>Buyer's quick check · ${q.score}/${q.max}</h3><div class="meter"><i style="width:${q.score * 10}%"></i></div>
+    <div class="chips">${q.points.map(p => `<span class="chip ${p.ok ? 'ok' : 'no'}">${p.ok ? '✓' : '✗'} ${esc(p.label)}</span>`).join('')}</div>
+    <div class="actions">
+      <button class="btn sm ${watched ? 'on' : ''}" data-star="${esc(d)}">${watched ? '★ Watching' : '☆ Add to watchlist'}</button>
+      ${r.expires ? `<button class="btn sm ghost" data-ics="${esc(d)}">📅 Calendar reminder</button>` : ''}
+      <button class="btn sm ghost" data-msg="${esc(d)}">✉️ Heads-up message</button>
+      <button class="btn sm ghost" data-copy="${esc(d)}">⧉ Copy details</button>
+      <button class="btn sm ghost" data-recheck="${esc(d)}">↻</button>
+    </div>
+    <div class="msgbox" hidden></div>
+    <p class="small muted" style="margin:10px 0 0">Checked ${esc(new Date(r.checkedAt || Date.now()).toLocaleTimeString('en-IN', {hour:'numeric', minute:'2-digit'}))} from the official registry (RDAP).</p>
+  </article>`;
+}
+
+/* ---------- lookups ---------- */
+async function check(domain) {
+  const r = await RDAP.lookup(domain);
+  r.checkedAt = new Date().toISOString();
+  if (r.domain) cache[r.domain] = r;
+  if (r.domain && store.watch[r.domain] && !r.error) { store.watch[r.domain].last = r; store.watch[r.domain].checkedAt = r.checkedAt; save(); }
+  return r;
+}
+async function runSearch(text) {
+  const list = RDAP.parseList(text).slice(0, 50);
+  if (!list.length) return toast('Enter a website like example.com');
+  showTab('check');
+  $('#intro').hidden = true;
+  lastShown = list;
+  $('#results').innerHTML = list.map(d => `<article class="card res" data-d="${esc(d)}"><div class="top"><div class="dom">${esc(d)}</div><span class="badge p-unknown"><span class="spin"></span> Checking…</span></div></article>`).join('');
+  $('#goBtn').disabled = true;
+  let i = 0;
+  const work = async () => { while (i < list.length) { const d = list[i++]; const r = await check(d); const el = $(`#results [data-d="${CSS.escape(d)}"]`); if (el) el.outerHTML = cardHTML(r); } };
+  await Promise.all([work(), work(), work()]);
+  $('#goBtn').disabled = false;
+  if (list.length > 1) $('#results').insertAdjacentHTML('afterbegin', `<div class="row between" style="margin-bottom:10px"><span class="small muted">${list.length} domains checked</span><button class="btn sm ghost" data-act="watch-all">☆ Watch all</button></div>`);
+}
+
+/* ---------- watchlist ---------- */
+let wFilter = 'all', sFilter = 'all';
+const FILTERS = [['all','All'], ['attn','Needs attention'], ['30','≤ 30 days'], ['90','≤ 90 days'], ['expired','Expired'], ['free','Available'], ['star','Good names (7+)']];
+function matches(r, f) {
+  if (!r) return f === 'all';
+  const k = phaseKey(r);
+  if (f === 'all') return true;
+  if (f === 'attn') return ['pendingDelete','redemption','grace','available','soon'].includes(k);
+  if (f === '30') return r.daysLeft != null && r.daysLeft >= 0 && r.daysLeft <= 30;
+  if (f === '90') return r.daysLeft != null && r.daysLeft >= 0 && r.daysLeft <= 90;
+  if (f === 'expired') return ['grace','redemption','pendingDelete'].includes(k);
+  if (f === 'free') return k === 'available';
+  if (f === 'star') return r.found !== false && !r.error && RDAP.quality(r.domain, r).score >= 7;
+}
+function rowHTML(d, r, extra) {
+  const dt = r ? daysText(r) : {big:'…', small:''};
+  const sub = !r ? 'Not checked yet' : r.error ? r.error : r.found === false ? 'Free to register' : [r.expires ? (r.daysLeft < 0 ? 'Expired ' : 'Renews ') + fDate(r.expires) : 'No expiry published', r.registrar && r.registrar.name].filter(Boolean).join(' · ');
+  return `<button class="item" data-open="${esc(d)}"><span class="grow"><span class="d">${esc(d)}</span> ${r ? badge(r) : ''}<div class="m">${esc(sub)}${extra || ''}</div></span><span class="days">${r && r.found !== false && !r.error ? `${dt.big}<small>${dt.small}</small>` : ''}</span></button>`;
+}
+function sortRes(a, b) { return (ORDER[phaseKey(a.r || {error:1})] ?? 9) - (ORDER[phaseKey(b.r || {error:1})] ?? 9) || ((a.r && a.r.daysLeft) ?? 1e9) - ((b.r && b.r.daysLeft) ?? 1e9) || a.d.localeCompare(b.d); }
+function renderFilters(el, cur, attr) { el.innerHTML = FILTERS.map(([k, v]) => `<button data-${attr}="${k}" class="${cur === k ? 'on' : ''}">${v}</button>`).join(''); }
+function renderWatch() {
+  const items = Object.keys(store.watch).map(d => ({d, r:store.watch[d].last})).sort(sortRes);
+  $('#nWatch').textContent = items.length;
+  renderFilters($('#filters'), wFilter, 'wf');
+  const shown = items.filter(x => matches(x.r, wFilter));
+  $('#watchList').innerHTML = !items.length ? '<div class="empty">Nothing here yet. Check a website and tap <b>☆ Add to watchlist</b>.</div>'
+    : shown.length ? shown.map(x => rowHTML(x.d, x.r, store.watch[x.d].checkedAt ? ` · checked ${ago(store.watch[x.d].checkedAt)}` : '')).join('') : '<div class="empty">No domains match this filter.</div>';
+}
+async function refreshAll() {
+  const ds = Object.keys(store.watch); if (!ds.length) return;
+  toast(`Checking ${ds.length} domains…`);
+  let i = 0; const work = async () => { while (i < ds.length) { await check(ds[i++]); renderWatch(); } };
+  await Promise.all([work(), work(), work()]); toast('Watchlist updated');
+}
+
+/* ---------- daily scan ---------- */
+let scan = null;
+async function loadScan() {
+  $('#editLink').href = `https://github.com/${REPO}/edit/main/domains.txt`;
+  try {
+    const res = await fetch('data/domains.json?v=' + Date.now(), {cache:'no-store'});
+    if (!res.ok) throw 0; scan = await res.json();
+    // recompute days left from today, since the file may be a day old
+    scan.results.forEach(r => { if (r.expires) { r.daysLeft = Math.floor((Date.parse(r.expires) - Date.now()) / 864e5); if (!r.error && r.found !== false && !/pending|redemption/.test((r.status || []).join(' '))) r.phase = RDAP.phaseOf(r); } });
+    renderScan();
+  } catch (e) { $('#scanMeta').textContent = 'The daily scan has not run yet. It runs every morning, or when domains.txt changes.'; }
+}
+function renderScan() {
+  if (!scan) return;
+  $('#scanMeta').innerHTML = `${scan.count} domains · last scanned ${esc(fDateTime(scan.generated))}`;
+  renderFilters($('#scanFilters'), sFilter, 'sf');
+  const items = scan.results.map(r => ({d:r.domain, r})).sort(sortRes).filter(x => matches(x.r, sFilter));
+  $('#scanList').innerHTML = items.length ? items.map(x => rowHTML(x.d, x.r)).join('') : '<div class="empty">No domains match this filter.</div>';
+}
+
+/* ---------- exports ---------- */
+function download(name, text, type) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], {type})); a.download = name;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
+}
+const cell = v => { v = String(v == null ? '' : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+function csv() {
+  const rows = [['Domain','Stage','Renewal date (UTC)','Days left','Registrar','Registered','Age (years)','Last changed','DNS / hosting','Status','Quality /10','Possible drop date']];
+  Object.keys(store.watch).forEach(d => { const r = store.watch[d].last || {}; rows.push([d, PHASE[phaseKey(r)] ? PHASE[phaseKey(r)].label : '', r.expires || '', r.daysLeft ?? '', r.registrar ? r.registrar.name : '', r.created ? r.created.slice(0, 10) : '', r.ageYears ?? '', r.updated ? r.updated.slice(0, 10) : '', r.host || (r.nameservers || []).join(' '), (r.status || []).join('; '), r.found === false || r.error ? '' : RDAP.quality(d, r).score, r.dropEstimate ? r.dropEstimate.slice(0, 10) : '']); });
+  download(`renewal-radar-${new Date().toISOString().slice(0, 10)}.csv`, '﻿' + rows.map(r => r.map(cell).join(',')).join('\r\n'), 'text/csv;charset=utf-8');
+}
+function ics(r) {
+  const stamp = d => new Date(d).toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const day = r.expires.slice(0, 10).replace(/-/g, '');
+  const body = ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//Renewal Radar//EN','CALSCALE:GREGORIAN','BEGIN:VEVENT',
+    `UID:${r.domain}-${day}@renewal-radar`, `DTSTAMP:${stamp(Date.now())}`, `DTSTART;VALUE=DATE:${day}`,
+    `SUMMARY:${r.domain} renewal date`, `DESCRIPTION:${r.domain} expires ${fUTC(r.expires)}. Registrar: ${(r.registrar && r.registrar.name) || 'unknown'}.`,
+    'BEGIN:VALARM','TRIGGER:-P30D','ACTION:DISPLAY',`DESCRIPTION:${r.domain} renews in 30 days`,'END:VALARM',
+    'BEGIN:VALARM','TRIGGER:-P7D','ACTION:DISPLAY',`DESCRIPTION:${r.domain} renews in 7 days`,'END:VALARM',
+    'END:VEVENT','END:VCALENDAR'].join('\r\n');
+  download(`${r.domain}-renewal.ics`, body, 'text/calendar');
+}
+function details(r) {
+  return [`${r.domain}`, r.expires ? `Renewal date: ${fDateTime(r.expires)} (${fUTC(r.expires)})` : 'Renewal date: not published', r.daysLeft != null ? (r.daysLeft >= 0 ? `Days left: ${r.daysLeft}` : `Expired ${-r.daysLeft} days ago`) : '',
+    `Stage: ${PHASE[phaseKey(r)].label}`, r.registrar && r.registrar.name ? `Registrar: ${r.registrar.name}` : '', r.created ? `Registered: ${fDate(r.created)} (${r.ageYears} years)` : '', r.host ? `DNS/hosting: ${r.host}` : ''].filter(Boolean).join('\n');
+}
+function headsUp(r) {
+  const when = r.expires ? fDate(r.expires) : 'soon';
+  const past = r.daysLeft != null && r.daysLeft < 0;
+  return `Hello,\n\nI noticed that your website's domain ${r.domain} ${past ? `expired on ${when}` : `is due for renewal on ${when}`}${r.registrar && r.registrar.name ? ` (registrar: ${r.registrar.name})` : ''}. ${past ? 'Your website and email on this domain may stop working, and the name can be lost if it is not renewed soon.' : 'If it is not renewed in time, your website and email on this domain will stop working.'}\n\nYou can renew it from your registrar account. If you'd like, I can take care of renewals and reminders for you every year so this never becomes a problem.\n\nRegards,\n[Your name]\n[Your phone / WhatsApp]`;
+}
+
+/* ---------- tabs ---------- */
+function showTab(t) {
+  $$('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
+  ['check','watch','scan','guide'].forEach(k => $('#v-' + k).hidden = k !== t);
+  if (t === 'watch') renderWatch();
+  if (t === 'scan') { if (scan) renderScan(); else loadScan(); }
+  try { history.replaceState(null, '', t === 'check' ? location.pathname + location.search : '#' + t); } catch (e) {}
+}
+
+/* ---------- events ---------- */
+$('#searchForm').addEventListener('submit', e => { e.preventDefault(); runSearch($('#q').value); $('#q').blur(); });
+document.addEventListener('click', async e => {
+  const b = e.target.closest('button, a[data-open]'); if (!b) return;
+  const ds = b.dataset;
+  if (ds.tab) return showTab(ds.tab);
+  if (ds.try) { $('#q').value = ds.try; return runSearch(ds.try); }
+  if (ds.wf) { wFilter = ds.wf; return renderWatch(); }
+  if (ds.sf) { sFilter = ds.sf; return renderScan(); }
+  if (ds.open) {
+    const d = ds.open, r = (store.watch[d] && store.watch[d].last) || (scan && scan.results.find(x => x.domain === d));
+    showTab('check'); $('#intro').hidden = true; $('#q').value = d;
+    $('#results').innerHTML = r ? cardHTML(r) : '';
+    scrollTo({top:$('#results').offsetTop - 80, behavior:'smooth'});
+    const fresh = await check(d); const el = $(`#results [data-d="${CSS.escape(d)}"]`);
+    if (el) el.outerHTML = cardHTML(fresh); else $('#results').innerHTML = cardHTML(fresh);
+    return;
+  }
+  if (ds.star) {
+    const d = ds.star;
+    if (store.watch[d]) { delete store.watch[d]; toast('Removed from watchlist'); }
+    else { store.watch[d] = {added:new Date().toISOString(), last:cache[d] || null, checkedAt:cache[d] ? cache[d].checkedAt : null}; toast('Added to watchlist'); }
+    save(); $('#nWatch').textContent = Object.keys(store.watch).length;
+    const el = b.closest('.res'); if (el && cache[d]) el.outerHTML = cardHTML(cache[d]);
+    return;
+  }
+  if (ds.recheck) { const d = ds.recheck, el = b.closest('.res'); b.disabled = true; b.innerHTML = '<span class="spin"></span>'; const r = await check(d); if (el) el.outerHTML = cardHTML(r); return; }
+  if (ds.ics) return cache[ds.ics] && ics(cache[ds.ics]);
+  if (ds.copy) { const r = cache[ds.copy]; if (r && navigator.clipboard) navigator.clipboard.writeText(details(r)).then(() => toast('Copied'), () => toast('Could not copy')); return; }
+  if (ds.msg) {
+    const r = cache[ds.msg], box = b.closest('.res').querySelector('.msgbox'); if (!r || !box) return;
+    if (!box.hidden) { box.hidden = true; return; }
+    const text = headsUp(r);
+    box.innerHTML = `<h3>Heads-up message for the owner</h3><div class="msg" contenteditable="true">${esc(text)}</div><div class="row"><button class="btn sm" data-copymsg>⧉ Copy</button>${navigator.share ? '<button class="btn sm ghost" data-sharemsg>↗ Share</button>' : ''}<span class="small muted">Find the owner's contact on their website's Contact page.</span></div>`;
+    box.hidden = false; return;
+  }
+  if ('copymsg' in ds) { const t = b.closest('.msgbox').querySelector('.msg').innerText; navigator.clipboard && navigator.clipboard.writeText(t).then(() => toast('Message copied')); return; }
+  if ('sharemsg' in ds) { const t = b.closest('.msgbox').querySelector('.msg').innerText; navigator.share({text:t}).catch(() => {}); return; }
+  switch (ds.act) {
+    case 'bulk': { const t = prompt('Paste websites or domains (separated by spaces, commas or new lines):'); if (t) { $('#q').value = RDAP.parseList(t).join(', '); runSearch(t); } return; }
+    case 'watch-all': lastShown.forEach(d => { if (!store.watch[d]) store.watch[d] = {added:new Date().toISOString(), last:cache[d] || null, checkedAt:cache[d] && cache[d].checkedAt}; }); save(); $('#nWatch').textContent = Object.keys(store.watch).length; toast(`${lastShown.length} added to watchlist`); return;
+    case 'refresh-all': return refreshAll();
+    case 'csv': return csv();
+  }
+});
+
+/* ---------- start ---------- */
+$('#nWatch').textContent = Object.keys(store.watch).length;
+const params = new URLSearchParams(location.search);
+if (params.get('q')) { $('#q').value = params.get('q'); runSearch(params.get('q')); }
+else if (['watch','scan','guide'].includes(location.hash.slice(1))) showTab(location.hash.slice(1));
+if ('serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').catch(() => {});
+</script>
+</body>
+</html>
