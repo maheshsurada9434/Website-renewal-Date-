@@ -36,6 +36,8 @@ function nameScore(domain) {
   if (/^[a-z]+$/.test(sld) && /[aeiou]/.test(sld) && !/[^aeiouy]{4}/.test(sld)) s += 5;
   return { s, tld, sld };
 }
+const ADULT = /(porn|xxx|cunt|fuck|pussy|hentai|milf|slut|whore|bdsm|viagra|cialis|nudes|camgirl)/;
+const ADULT_WORDS = new Set('sex sexy tit tits anal cam cams nude naked dick cock boob boobs escort escorts porn xxx cunt fuck fetish bdsm casino bet betting'.split(' '));
 const clamp = n => Math.max(0, Math.min(100, Math.round(n)));
 
 /* ---------- 1. Dropping today: SnapNames deleting list ---------- */
@@ -53,7 +55,9 @@ async function dropping() {
     total++; const day = when.slice(0, 10); byDate[day] = (byDate[day] || 0) + 1;
     const hrs = (Date.parse(when) - now) / 36e5;
     if (hrs < -12 || hrs > 36) return; // dropping today / within ~a day
-    const bidders = num(c[4]), bid = num(c[1]), words = c[8], wc = num(c[9]), cats = c[10];
+    const bidders = num(c[4]), bid = num(c[1]), words = c[8], cats = c[10];
+    const wc = words ? words.split(/\s+/).filter(Boolean).length : 0;
+    if (ADULT.test(domain) || /adult/i.test(cats) || words.toLowerCase().split(/\s+/).some(w => ADULT_WORDS.has(w))) return;
     const ns = nameScore(domain);
     // Real dictionary words make a name worth having; random letter strings rarely are.
     const fullWords = wc >= 1 && words.replace(/[^a-z]/gi, '').toLowerCase() === ns.sld.replace(/[^a-z]/g, '');
@@ -75,7 +79,7 @@ async function expired() {
   let buf = '', total = 0, endingSoon = 0; const best = [];
   const handle = o => {
     total++;
-    if (o.isAdult) return;
+    if (o.isAdult || ADULT.test(String(o.domainName || '').toLowerCase())) return;
     const end = Date.parse(o.auctionEndTime); if (!end) return;
     const hrs = (end - now) / 36e5;
     if (hrs < 0 || hrs > 36) return;
