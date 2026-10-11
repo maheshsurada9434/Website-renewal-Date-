@@ -128,6 +128,23 @@ textarea.in{min-height:110px;resize:vertical}
 .spin{display:inline-block;width:16px;height:16px;border-radius:50%;border:2px solid currentColor;border-right-color:transparent;animation:sweep .7s linear infinite;vertical-align:-3px}
 .toast{position:fixed;left:50%;bottom:calc(20px + var(--sab));transform:translate(-50%,20px);background:#11152a;color:#fff;padding:10px 16px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;visibility:hidden;transition:.2s;z-index:90;max-width:90vw;text-align:center}
 .toast.show{opacity:1;visibility:visible;transform:translate(-50%,0)}
+/* hot list */
+.hot h2{display:flex;align-items:center;gap:8px}
+.seg{display:flex;background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:3px;margin:10px 0}
+.seg button{flex:1;border:0;background:none;border-radius:9px;padding:8px 4px;font-weight:700;font-size:13px;white-space:nowrap;color:var(--muted)}
+.seg button.on{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.hrow{display:flex;gap:10px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line)}
+.hrow:first-child{border-top:0}
+.hrow .rk{flex:none;width:22px;text-align:right;color:var(--muted);font-size:12.5px;font-variant-numeric:tabular-nums;padding-top:2px}
+.hrow .grow{flex:1;min-width:0}
+.hrow .d{font-weight:800;word-break:break-all}
+.hrow .m{font-size:12.5px;color:var(--muted);margin-top:2px}
+.hrow .m b{color:var(--ink);font-weight:600}
+.hrow .acts{display:flex;gap:6px;margin-top:7px;flex-wrap:wrap}
+.sc{display:inline-block;min-width:34px;text-align:center;font-size:12px;font-weight:800;padding:2px 7px;border-radius:8px;background:var(--brand-soft);color:var(--brand);margin-left:4px;vertical-align:1px}
+.sc.hi{background:var(--free-soft);color:var(--free)}
+.when{font-size:12px;font-weight:700;color:var(--hot);white-space:nowrap}
+.when.past{color:var(--bad)}
 footer{text-align:center;color:var(--muted);font-size:12.5px;padding:8px 0 calc(28px + var(--sab))}
 .guide p,.guide li{font-size:14.5px}
 .guide ol,.guide ul{padding-left:20px;margin:6px 0}
@@ -163,6 +180,15 @@ table.t th{font-size:12px;color:var(--muted)}
 
   <section id="v-check">
     <div id="results"></div>
+    <div class="card hot" id="hot">
+      <h2>🔥 Expired &amp; dropping today</h2>
+      <p class="small muted" style="margin:0" id="hotMeta">Loading today's list…</p>
+      <div class="seg" id="hotSeg"><button data-hot="dropping" class="on">Dropping now</button><button data-hot="expired">Expired · auction ends today</button></div>
+      <div class="filters" id="hotFilters"></div>
+      <div id="hotList"></div>
+      <div class="row" style="justify-content:center;margin-top:10px"><button class="btn sm ghost" data-act="hot-more" id="hotMore" hidden>Show 20 more</button></div>
+      <p class="small muted" style="margin:12px 0 0">Score /100 ranks name quality and demand (length, ending, age, bids, value, backlinks). Skip company and brand names; see the Guide.</p>
+    </div>
     <div class="card" id="intro">
       <h2>What you'll see</h2>
       <ul class="small muted" style="margin:6px 0 0;padding-left:18px">
@@ -449,6 +475,51 @@ function headsUp(r) {
   return `Hello,\n\nI noticed that your website's domain ${r.domain} ${past ? `expired on ${when}` : `is due for renewal on ${when}`}${r.registrar && r.registrar.name ? ` (registrar: ${r.registrar.name})` : ''}. ${past ? 'Your website and email on this domain may stop working, and the name can be lost if it is not renewed soon.' : 'If it is not renewed in time, your website and email on this domain will stop working.'}\n\nYou can renew it from your registrar account. If you'd like, I can take care of renewals and reminders for you every year so this never becomes a problem.\n\nRegards,\n[Your name]\n[Your phone / WhatsApp]`;
 }
 
+/* ---------- hot list (data/feed.json, built twice a day) ---------- */
+let feed = null, hotKind = 'dropping', hotF = 'all', hotN = 20;
+const HOT_F = [['all','All'], ['com','.com'], ['words','Real words'], ['short','Short (≤8)'], ['clean','No numbers / hyphens'], ['demand','Has bids']];
+const money = v => { const n = Number(String(v || '').replace(/[$,]/g, '')); return n ? '$' + n.toLocaleString('en-US') : ''; };
+function inTime(iso, verbFuture, verbPast) {
+  const h = (Date.parse(iso) - Date.now()) / 36e5;
+  if (h < 0) { const a = -h; return {t:`${verbPast} ${a < 1 ? Math.round(a * 60) + ' min' : Math.round(a) + ' h'} ago`, past:true}; }
+  return {t:`${verbFuture} ${h < 1 ? Math.round(h * 60) + ' min' : Math.round(h) + ' h'}`, past:false};
+}
+async function loadFeed() {
+  try { const r = await fetch('data/feed.json?v=' + Date.now(), {cache:'no-store'}); if (!r.ok) throw 0; feed = await r.json(); }
+  catch (e) { $('#hotMeta').textContent = "Today's list isn't ready yet. It's built every morning and evening."; return; }
+  renderHot();
+}
+function hotMatch(x) {
+  const sld = x.domain.split('.')[0];
+  if (hotF === 'com') return x.tld === 'com';
+  if (hotF === 'words') return !!x.words || x.traffic > 0;
+  if (hotF === 'short') return sld.length <= 8;
+  if (hotF === 'clean') return !/[-\d]/.test(sld);
+  if (hotF === 'demand') return (x.bidders || x.bids) > 0;
+  return true;
+}
+function renderHot() {
+  if (!feed) return;
+  const D = feed.dropping || {items:[]}, E = feed.expired || {items:[]};
+  $('#hotMeta').innerHTML = `Updated ${esc(fDateTime(feed.generated))} · ${(D.total || 0).toLocaleString('en-IN')} domains being deleted this week, ${(E.endingSoon || 0).toLocaleString('en-IN')} expired-domain auctions ending within a day`;
+  $$('#hotSeg button').forEach(b => { b.classList.toggle('on', b.dataset.hot === hotKind); const n = (feed[b.dataset.hot] || {items:[]}).items.length; b.textContent = (b.dataset.hot === 'dropping' ? 'Dropping today' : 'Expired, auction today') + ` (${n})`; });
+  $('#hotFilters').innerHTML = HOT_F.map(([k, v]) => `<button data-hf="${k}" class="${hotF === k ? 'on' : ''}">${v}</button>`).join('');
+  const all = ((feed[hotKind] || {}).items || []).filter(hotMatch);
+  const list = all.slice(0, hotN);
+  $('#hotList').innerHTML = list.length ? list.map((x, i) => {
+    const w = hotKind === 'dropping' ? inTime(x.when, 'Drops in', 'Dropped') : inTime(x.when, 'Auction ends in', 'Auction ended');
+    const watched = !!store.watch[x.domain];
+    const meta = hotKind === 'dropping'
+      ? [x.bidders ? `<b>${x.bidders}</b> backorder${x.bidders > 1 ? 's' : ''}` : '', x.words ? `Words: ${esc(x.words)}` : '', x.categories ? esc(x.categories) : ''].filter(Boolean).join(' · ')
+      : [x.valuation && x.valuation !== '$0' ? `Value <b>${esc(money(x.valuation))}</b>` : '', x.price ? `Price <b>${esc(money(x.price))}</b>` : '', x.age ? `<b>${x.age}</b> yrs old` : '', x.bids ? `<b>${x.bids}</b> bids` : '', x.refDomains ? `${x.refDomains.toLocaleString('en-IN')} linking sites` : '', x.traffic ? `${x.traffic.toLocaleString('en-IN')} searches/mo` : ''].filter(Boolean).join(' · ');
+    const link = hotKind === 'expired' && x.link ? `<a class="btn sm" target="_blank" rel="noopener" href="${esc(x.link)}">Auction ↗</a>` : `<a class="btn sm" target="_blank" rel="noopener" href="https://www.hostinger.in/domain-name-search?domain=${encodeURIComponent(x.domain)}">Register ↗</a>`;
+    return `<div class="hrow"><span class="rk">${i + 1}</span><div class="grow"><div><span class="d">${esc(x.domain)}</span><span class="sc ${x.score >= 60 ? 'hi' : ''}" title="Quality and demand score">${x.score}</span></div>
+      <div class="m"><span class="when ${w.past ? 'past' : ''}">${esc(w.t)}</span>${meta ? ' · ' + meta : ''}</div>
+      <div class="acts"><button class="btn sm ghost" data-try="${esc(x.domain)}">Check</button><button class="btn sm ghost ${watched ? 'on' : ''}" data-hotstar="${esc(x.domain)}">${watched ? '★' : '☆'}</button>${link}</div></div></div>`;
+  }).join('') : '<div class="empty">No domains match this filter today.</div>';
+  $('#hotMore').hidden = all.length <= hotN;
+}
+
 /* ---------- tabs ---------- */
 function showTab(t) {
   $$('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
@@ -464,8 +535,11 @@ document.addEventListener('click', async e => {
   const b = e.target.closest('button, a[data-open]'); if (!b) return;
   const ds = b.dataset;
   if (ds.tab) return showTab(ds.tab);
-  if (ds.try) { $('#q').value = ds.try; return runSearch(ds.try); }
+  if (ds.try) { $('#q').value = ds.try; scrollTo({top:$('#results').offsetTop - 80, behavior:'smooth'}); return runSearch(ds.try); }
   if (ds.wf) { wFilter = ds.wf; return renderWatch(); }
+  if (ds.hot) { hotKind = ds.hot; hotN = 20; return renderHot(); }
+  if (ds.hf) { hotF = ds.hf; hotN = 20; return renderHot(); }
+  if (ds.hotstar) { const d = ds.hotstar; if (store.watch[d]) delete store.watch[d]; else store.watch[d] = {added:new Date().toISOString(), last:cache[d] || null}; save(); $('#nWatch').textContent = Object.keys(store.watch).length; toast(store.watch[d] ? 'Added to watchlist' : 'Removed'); return renderHot(); }
   if (ds.sf) { sFilter = ds.sf; return renderScan(); }
   if (ds.open) {
     const d = ds.open, r = (store.watch[d] && store.watch[d].last) || (scan && scan.results.find(x => x.domain === d));
@@ -499,6 +573,7 @@ document.addEventListener('click', async e => {
   switch (ds.act) {
     case 'bulk': { const t = prompt('Paste websites or domains (separated by spaces, commas or new lines):'); if (t) { $('#q').value = RDAP.parseList(t).join(', '); runSearch(t); } return; }
     case 'watch-all': lastShown.forEach(d => { if (!store.watch[d]) store.watch[d] = {added:new Date().toISOString(), last:cache[d] || null, checkedAt:cache[d] && cache[d].checkedAt}; }); save(); $('#nWatch').textContent = Object.keys(store.watch).length; toast(`${lastShown.length} added to watchlist`); return;
+    case 'hot-more': hotN += 20; return renderHot();
     case 'refresh-all': return refreshAll();
     case 'csv': return csv();
   }
@@ -506,6 +581,7 @@ document.addEventListener('click', async e => {
 
 /* ---------- start ---------- */
 $('#nWatch').textContent = Object.keys(store.watch).length;
+loadFeed();
 const params = new URLSearchParams(location.search);
 if (params.get('q')) { $('#q').value = params.get('q'); runSearch(params.get('q')); }
 else if (['watch','scan','guide'].includes(location.hash.slice(1))) showTab(location.hash.slice(1));

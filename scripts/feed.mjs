@@ -55,7 +55,9 @@ async function dropping() {
     if (hrs < -12 || hrs > 36) return; // dropping today / within ~a day
     const bidders = num(c[4]), bid = num(c[1]), words = c[8], wc = num(c[9]), cats = c[10];
     const ns = nameScore(domain);
-    let s = 20 + ns.s + Math.min(30, bidders * 6) + Math.min(10, log10(bid) * 4) + (wc >= 1 && wc <= 2 ? 8 : 0) + (cats ? 4 : 0);
+    // Real dictionary words make a name worth having; random letter strings rarely are.
+    const fullWords = wc >= 1 && words.replace(/[^a-z]/gi, '').toLowerCase() === ns.sld.replace(/[^a-z]/g, '');
+    let s = 10 + ns.s + Math.min(35, bidders * 8) + Math.min(10, log10(bid) * 4) + (fullWords ? (wc <= 2 ? 24 : 12) : wc ? 4 : -10) + (cats ? 6 : 0);
     const item = { domain, tld: ns.tld, when, bidders, bid, words, categories: cats.split(/\s*,\s*/).filter(Boolean).slice(0, 3).join(', '), score: clamp(s) };
     best.push(item);
     if (best.length > KEEP * 6) { best.sort((a, b) => b.score - a.score); best.length = KEEP * 3; }
