@@ -34,6 +34,8 @@ if (process.env.GITHUB_STEP_SUMMARY) {
 }
 
 // Check that browsers may read each registry (CORS), so the in-app lookup works.
+// Keep a copy of IANA's RDAP server list next to the app.
+try { const b = await fetch('https://data.iana.org/rdap/dns.json'); if (b.ok) writeFileSync(new URL('../data/dns.json', import.meta.url), await b.text()); } catch (e) {}
 const access = {};
 const hosts = [...new Set(results.map(r => r.checkedVia).filter(Boolean))];
 for (const h of hosts) {

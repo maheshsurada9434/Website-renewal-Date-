@@ -37,12 +37,16 @@
   }
 
   let bootstrap = null;
+  // The site keeps a copy of IANA's registry list (data/dns.json, refreshed by the daily scan).
+  const LOCAL_BOOTSTRAP = typeof location !== 'undefined' && /^https?:/.test(location.protocol) ? 'data/dns.json' : '';
   async function servers(fetchFn) {
     if (bootstrap) return bootstrap;
     try {
-      const r = await fetchFn(BOOTSTRAP_URL);
-      if (!r.ok) throw new Error('bootstrap ' + r.status);
-      const j = await r.json();
+      let j = null;
+      for (const u of [LOCAL_BOOTSTRAP, BOOTSTRAP_URL].filter(Boolean)) {
+        try { const r = await fetchFn(u); if (r.ok) { j = await r.json(); if (j && j.services) break; } } catch (e) {}
+      }
+      if (!j || !j.services) throw new Error('bootstrap');
       const map = {};
       (j.services || []).forEach(([tlds, urls]) => {
         const url = (urls.find(u => u.startsWith('https:')) || urls[0] || '').replace(/\/?$/, '/');
