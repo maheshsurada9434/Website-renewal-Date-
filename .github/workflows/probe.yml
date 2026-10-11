@@ -8,7 +8,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
-          mkdir -p tmp; out=data/probe.txt; : > $out
+          set +e +o pipefail; mkdir -p tmp; out=data/probe.txt; : > $out
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
           for u in \
             https://www.pool.com/Downloads/PoolDeletingDomainsList.zip \
@@ -28,4 +28,4 @@ jobs:
           done
           cat $out
           git config user.name "Mahesh Surada"; git config user.email "36591838+maheshsurada9434@users.noreply.github.com"
-          git add data/probe.txt; git commit -m "Probe domain list sources"; git push
+          git add data/probe.txt; git commit -m "Probe domain list sources"; git pull --rebase; git push
