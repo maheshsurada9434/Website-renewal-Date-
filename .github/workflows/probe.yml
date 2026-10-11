@@ -10,22 +10,14 @@ jobs:
       - run: |
           set +e +o pipefail; mkdir -p tmp; out=data/probe.txt; : > $out
           UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 Chrome/126 Safari/537.36"
-          for u in \
-            https://www.pool.com/Downloads/PoolDeletingDomainsList.zip \
-            https://inventory.auctions.godaddy.com/all_expiring_auctions.json.zip \
-            https://inventory.auctions.godaddy.com/tdnam_all_listings.csv.zip \
-            https://inventory.auctions.godaddy.com/all_listings_ending_today.json.zip \
-            https://inventory.auctions.godaddy.com/expiring_service_auctions.json.zip \
-            https://www.snapnames.com/file_dl.sn?file=deletinglist.zip \
-            https://www.namejet.com/download/StandardAuctions.csv \
-            https://www.dynadot.com/market/backorder/backorders.csv \
-            https://tranco-list.eu/top-1m.csv.zip ; do
-            f=tmp/$(echo "$u" | md5sum | cut -c1-8)
-            code=$(curl -sSL -A "$UA" -m 120 -o $f -w '%{http_code} %{content_type} %{size_download}' "$u" 2>&1)
-            echo "== $u -> $code" >> $out
-            if file $f | grep -qi zip; then unzip -l $f | head -5 >> $out; unzip -p $f | head -c 600 >> $out; else head -c 400 $f >> $out; fi
-            echo >> $out
-          done
+          curl -sSL -m 200 -o tmp/g.zip https://inventory.auctions.godaddy.com/all_listings_ending_today.json.zip
+          unzip -p tmp/g.zip | head -c 2600 >> $out; echo >> $out
+          unzip -p tmp/g.zip | grep -o '"auctionType": *"[^"]*"' | sort | uniq -c >> $out
+          curl -sSL -m 200 -o tmp/s.zip "https://www.snapnames.com/file_dl.sn?file=deletinglist.zip"
+          unzip -p tmp/s.zip | head -4 | cut -c1-700 >> $out
+          echo "lines: $(unzip -p tmp/s.zip | wc -l)" >> $out
+          unzip -p tmp/s.zip | awk -F'\t' 'NR>1{print $3}' | cut -c1-11 | sort | uniq -c | head -12 >> $out
+          unzip -p tmp/s.zip | awk -F'\t' 'NR>1{print $7}' | sort | uniq -c | sort -rn | head -15 >> $out
           cat $out
           git config user.name "Mahesh Surada"; git config user.email "36591838+maheshsurada9434@users.noreply.github.com"
           git add data/probe.txt; git commit -m "Probe domain list sources"; git pull --rebase; git push
