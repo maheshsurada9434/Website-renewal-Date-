@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-17T10:48:06.440Z",
+ "generated": "2026-11-17T22:18:28.832Z",
  "count": 4,
  "results": [
   {
@@ -62,41 +62,6 @@
    "quality": 10
   },
   {
-   "domain": "github.com",
-   "found": true,
-   "expires": "2028-10-09T18:20:50Z",
-   "created": "2007-10-09T18:20:50Z",
-   "updated": "2026-09-07T09:22:52Z",
-   "daysLeft": 692,
-   "status": [
-    "client delete prohibited",
-    "client transfer prohibited",
-    "client update prohibited"
-   ],
-   "nameservers": [
-    "dns1.p08.nsone.net",
-    "dns2.p08.nsone.net",
-    "dns3.p08.nsone.net",
-    "dns4.p08.nsone.net",
-    "ns-1283.awsdns-32.org",
-    "ns-1707.awsdns-21.co.uk",
-    "ns-421.awsdns-52.com",
-    "ns-520.awsdns-01.net"
-   ],
-   "host": "NS1",
-   "registrar": {
-    "name": "MarkMonitor Inc.",
-    "ianaId": "292",
-    "abuseEmail": "abusecomplaints@markmonitor.com",
-    "url": "http://www.markmonitor.com"
-   },
-   "ageYears": 19,
-   "phase": "active",
-   "dropEstimate": "",
-   "checkedVia": "https://rdap.verisign.com/com/v1/",
-   "quality": 10
-  },
-  {
    "domain": "andamanjobs.in",
    "found": true,
    "expires": "2029-09-21T03:15:29.723Z",
@@ -122,6 +87,10 @@
    "dropEstimate": "",
    "checkedVia": "https://rdap.nixiregistry.in/rdap/",
    "quality": 6
+  },
+  {
+   "domain": "github.com",
+   "error": "Registry answered 403"
   }
  ]
 }
