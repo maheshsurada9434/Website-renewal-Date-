@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-17T22:18:28.832Z",
+ "generated": "2026-11-18T10:16:05.400Z",
  "count": 4,
  "results": [
   {
@@ -8,7 +8,7 @@
    "expires": "2027-01-13T00:12:14Z",
    "created": "2001-01-13T00:12:14.754Z",
    "updated": "2026-08-12T08:47:19.41Z",
-   "daysLeft": 56,
+   "daysLeft": 55,
    "status": [
     "client delete prohibited",
     "client transfer prohibited",
@@ -38,7 +38,7 @@
    "expires": "2027-08-13T04:00:00Z",
    "created": "1995-08-14T04:00:00Z",
    "updated": "2026-08-14T08:01:43Z",
-   "daysLeft": 268,
+   "daysLeft": 267,
    "status": [
     "client delete prohibited",
     "client transfer prohibited",
@@ -62,12 +62,47 @@
    "quality": 10
   },
   {
+   "domain": "github.com",
+   "found": true,
+   "expires": "2028-10-09T18:20:50Z",
+   "created": "2007-10-09T18:20:50Z",
+   "updated": "2026-09-07T09:22:52Z",
+   "daysLeft": 691,
+   "status": [
+    "client delete prohibited",
+    "client transfer prohibited",
+    "client update prohibited"
+   ],
+   "nameservers": [
+    "dns1.p08.nsone.net",
+    "dns2.p08.nsone.net",
+    "dns3.p08.nsone.net",
+    "dns4.p08.nsone.net",
+    "ns-1283.awsdns-32.org",
+    "ns-1707.awsdns-21.co.uk",
+    "ns-421.awsdns-52.com",
+    "ns-520.awsdns-01.net"
+   ],
+   "host": "NS1",
+   "registrar": {
+    "name": "MarkMonitor Inc.",
+    "ianaId": "292",
+    "abuseEmail": "abusecomplaints@markmonitor.com",
+    "url": "http://www.markmonitor.com"
+   },
+   "ageYears": 19,
+   "phase": "active",
+   "dropEstimate": "",
+   "checkedVia": "https://rdap.verisign.com/com/v1/",
+   "quality": 10
+  },
+  {
    "domain": "andamanjobs.in",
    "found": true,
    "expires": "2029-09-21T03:15:29.723Z",
    "created": "2026-09-21T03:15:29.723Z",
    "updated": "2026-09-26T03:16:20.272Z",
-   "daysLeft": 1038,
+   "daysLeft": 1037,
    "status": [
     "client transfer prohibited"
    ],
@@ -87,10 +122,6 @@
    "dropEstimate": "",
    "checkedVia": "https://rdap.nixiregistry.in/rdap/",
    "quality": 6
-  },
-  {
-   "domain": "github.com",
-   "error": "Registry answered 403"
   }
  ]
 }
