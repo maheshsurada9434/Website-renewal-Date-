@@ -1,5 +1,5 @@
 {
- "generated": "2026-11-23T10:51:46.229Z",
+ "generated": "2026-11-24T01:39:03.230Z",
  "count": 4,
  "results": [
   {
@@ -8,7 +8,7 @@
    "expires": "2027-01-13T00:12:14Z",
    "created": "2001-01-13T00:12:14.754Z",
    "updated": "2026-08-12T08:47:19.41Z",
-   "daysLeft": 50,
+   "daysLeft": 49,
    "status": [
     "client delete prohibited",
     "client transfer prohibited",
@@ -67,7 +67,7 @@
    "expires": "2028-10-09T18:20:50Z",
    "created": "2007-10-09T18:20:50Z",
    "updated": "2026-09-07T09:22:52Z",
-   "daysLeft": 686,
+   "daysLeft": 685,
    "status": [
     "client delete prohibited",
     "client transfer prohibited",
